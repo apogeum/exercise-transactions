@@ -1,16 +1,16 @@
-###To build:
+### To build:
 
 `./gradlew build`
 
-###To run mutation tests:
+### To run mutation tests:
 `./gradlew pitest`
 
-###To run:
+### To run:
 In first console window `export SPRING_CONFIG_NAME=alice`
 
 In second console window `export SPRING_CONFIG_NAME=bob`
 
-###To test operation:
+### To test operation:
 
 `
 curl --header "Content-Type: application/json"
@@ -18,7 +18,7 @@ curl --header "Content-Type: application/json"
   --data '{"amount": 20,"from": "alice","to": "bob"}'
   localhost:8090/trustline/payment
   `
-###Features to add if I had more time
+### Features to add if I had more time
 * reconciliation functionality
   * merging conflicting transaction logs
   * model "source of truth"
