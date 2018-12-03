@@ -1,8 +1,11 @@
 package com.ripple.trustline;
 
+import com.ripple.trustline.controllers.TrustlineCoordinator;
+import com.ripple.trustline.dao.TransactionParams;
+import com.ripple.trustline.service.LocalTrustlineService;
+import com.ripple.trustline.service.TrustlineService;
 import org.junit.Test;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -18,8 +21,8 @@ public class TrustlineCoordinatorTest {
 
         TrustlineCoordinator c = new TrustlineCoordinator();
         c.setParticipants(participants);
-        c.post(TransactionParams.build("Alice", "Bob", 150));
-        c.post(TransactionParams.build("Bob", "Alice", 50));
+        c.post(TransactionParams.build("1","Alice", "Bob", 150));
+        c.post(TransactionParams.build("2","Bob", "Alice", 50));
 
         assertEquals(Integer.valueOf(-100), alice.calculateBalance());
         assertEquals(Integer.valueOf(100), bob.calculateBalance());

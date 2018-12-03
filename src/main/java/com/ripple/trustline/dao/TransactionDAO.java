@@ -1,6 +1,7 @@
-package com.ripple.trustline;
+package com.ripple.trustline.dao;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.ripple.trustline.domain.Transaction;
 
 import java.io.Serializable;
 

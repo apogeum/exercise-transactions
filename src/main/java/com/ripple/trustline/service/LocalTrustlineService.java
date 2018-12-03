@@ -1,20 +1,25 @@
-package com.ripple.trustline;
+package com.ripple.trustline.service;
 
+import com.ripple.trustline.domain.FileBasedTransactionsLog;
+import com.ripple.trustline.domain.Transaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 import javax.validation.constraints.NotNull;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
+@Order(value=1)
 public class LocalTrustlineService implements TrustlineService {
 
     Logger logger = LoggerFactory.getLogger(LocalTrustlineService.class);
 
     private final Map<String, Transaction> requested;
-    private final List<Transaction> committed;
+    private List<Transaction> committed;
 
     @Value("${trustline.account}")
     private String name;
@@ -67,6 +72,24 @@ public class LocalTrustlineService implements TrustlineService {
 
     public Integer calculateBalance() {
         return committed.stream().mapToInt(Transaction::amountInt).sum();
+    }
+
+    @Override
+    public List<Transaction> getCommittedReverse() {
+        return committed.stream()
+                .map(Transaction::reverse)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public void setCommitted(List<Transaction> s) {
+        committed = s;
+        log.overwrite(s);
+    }
+
+    @Override
+    public boolean isTransactionCommitted(String id) {
+        return committed.stream().anyMatch(t -> t.id.equals(id));
     }
 
     @Override

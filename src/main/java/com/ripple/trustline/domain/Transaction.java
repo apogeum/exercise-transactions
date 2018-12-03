@@ -1,28 +1,34 @@
-package com.ripple.trustline;
+package com.ripple.trustline.domain;
+
+import com.ripple.trustline.dao.TransactionParams;
 
 import java.util.UUID;
 
 public class Transaction {
     public final String id;
-    public final Dollars amount;
+    public final Dollar amount;
 
-    public Transaction(String id, TransactionParams txParams) {
-        this.id = id;
-        this.amount = Dollars.amount(txParams.amount);
+    public Transaction(TransactionParams txParams) {
+        this(txParams.id, Dollar.amount(txParams.amount));
     }
 
     public Transaction(String id, String amount) {
-        this.id = id;
-        this.amount = Dollars.amount(Integer.parseInt(amount));
+        this(id, Dollar.amount(Integer.parseInt(amount)));
     }
 
-    public Transaction(String id, Dollars amount) {
+    public Transaction(String id, Dollar amount) {
         this.id = id;
         this.amount = amount;
     }
 
+    public Transaction(){
+        this(UUID.randomUUID().toString(), Dollar.amount(0));
+    }
+
+
+
     public static Transaction build(TransactionParams txParams) {
-        return new Transaction(UUID.randomUUID().toString(), txParams);
+        return new Transaction(txParams);
     }
 
     public static Transaction build(String id, String amount) {
@@ -53,7 +59,7 @@ public class Transaction {
     }
 
     public Transaction reverse() {
-        return new Transaction(this.id, Dollars.amount(-this.amount.amount));
+        return new Transaction(this.id, Dollar.amount(-this.amount.amount));
     }
 
     public Integer amountInt() {

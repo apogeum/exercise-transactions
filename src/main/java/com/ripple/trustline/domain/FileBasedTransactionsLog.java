@@ -1,5 +1,6 @@
-package com.ripple.trustline;
+package com.ripple.trustline.domain;
 
+import com.ripple.trustline.domain.Transaction;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -39,6 +40,17 @@ public class FileBasedTransactionsLog {
         try (FileOutputStream log = new FileOutputStream(fileName, true)) {
             log.write(t.logLine().getBytes());
             log.write(System.getProperty("line.separator").getBytes());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void overwrite(List<Transaction> s) {
+        try (FileOutputStream log = new FileOutputStream(fileName, false)) {
+            for (Transaction t : s) {
+                log.write(t.logLine().getBytes());
+                log.write(System.getProperty("line.separator").getBytes());
+            }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

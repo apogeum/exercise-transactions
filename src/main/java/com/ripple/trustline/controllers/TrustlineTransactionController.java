@@ -1,5 +1,7 @@
-package com.ripple.trustline;
+package com.ripple.trustline.controllers;
 
+import com.ripple.trustline.service.LocalTrustlineService;
+import com.ripple.trustline.dao.TransactionDAO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +31,6 @@ public class TrustlineTransactionController {
 
     @PostMapping
     public void requestTransaction(@RequestBody @NotNull TransactionDAO tx){
-        // TODO validate
         svc.requestTransaction(tx.transaction());
     }
 
@@ -42,6 +43,5 @@ public class TrustlineTransactionController {
     public void rollbackTransaction(@PathVariable String txId){
         svc.rollbackTransaction(txId);
     }
-
 
 }

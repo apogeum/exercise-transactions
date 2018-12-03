@@ -1,5 +1,8 @@
 package com.ripple.trustline;
 
+import com.ripple.trustline.domain.Dollar;
+import com.ripple.trustline.domain.FileBasedTransactionsLog;
+import com.ripple.trustline.domain.Transaction;
 import org.junit.Test;
 
 import java.io.File;
@@ -22,9 +25,9 @@ public class FileBasedTransactionsLogTest {
         List<Transaction> txs = l.loadTransactions();
         assertEquals(2, txs.size());
         assertEquals("111", txs.get(0).id);
-        assertEquals(Dollars.amount(100), txs.get(0).amount);
+        assertEquals(Dollar.amount(100), txs.get(0).amount);
         assertEquals("112", txs.get(1).id);
-        assertEquals(Dollars.amount(50), txs.get(1).amount);
+        assertEquals(Dollar.amount(50), txs.get(1).amount);
         removeFile(fileName);
     }
 

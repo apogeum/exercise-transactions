@@ -1,8 +1,14 @@
-package com.ripple.trustline;
+package com.ripple.trustline.controllers;
 
+import com.ripple.trustline.exceptions.TransactionExists;
+import com.ripple.trustline.dao.TransactionParams;
+import com.ripple.trustline.service.TrustlineService;
+import com.ripple.trustline.domain.Transaction;
+import com.ripple.trustline.exceptions.ParticipantDoesNotExist;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.validation.constraints.NotNull;
@@ -18,6 +24,9 @@ import java.util.stream.Collectors;
 
 @Service
 public class TrustlineCoordinator {
+
+    @Value("${trustline.account}")
+    private String localAccount;
 
     Logger logger = LoggerFactory.getLogger(TrustlineCoordinator.class);
 
@@ -36,7 +45,7 @@ public class TrustlineCoordinator {
     }
 
     public void post(@NotNull TransactionParams txParams) {
-
+        validateParams(txParams);
         Transaction tx = Transaction.build(txParams);
         logger.info("TrustlineCoordinator post: " + tx);
 
@@ -54,5 +63,29 @@ public class TrustlineCoordinator {
         // commit
         participants.forEach((k, t) -> t.commitTransaction(tx.id));
 
+    }
+
+    private void validateParams(TransactionParams txParams) {
+        if (participants.get(localAccount).isTransactionCommitted(txParams.id)){
+            throw new TransactionExists(txParams.id);
+        }
+        if (!participants.containsKey(txParams.from)){
+            throw new ParticipantDoesNotExist(txParams.from);
+        }
+        if (!participants.containsKey(txParams.to)){
+            throw new ParticipantDoesNotExist(txParams.to);
+        }
+    }
+
+    public void reconcile(String source) {
+        if (!participants.containsKey(source)){
+            throw new ParticipantDoesNotExist(source);
+        }
+
+        for(String s : participants.keySet()) {
+            if (!s.equals(source)) {
+                participants.get(s).setCommitted(participants.get(source).getCommittedReverse());
+            }
+        }
     }
 }

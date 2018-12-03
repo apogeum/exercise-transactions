@@ -1,17 +1,21 @@
-package com.ripple.trustline;
+package com.ripple.trustline.domain;
 
-public class Dollars {
+public class Dollar {
     public final Integer amount;
 
-    private Dollars(Integer amount) {
+    public Dollar(Integer amount) {
         this.amount = amount;
     }
 
-    public static Dollars amount(Integer amount) {
+    public Dollar(){
+        this.amount = 0;
+    }
+
+    public static Dollar amount(Integer amount) {
         if (amount == null){
             throw new RuntimeException("amount cannot be null");
         }
-        return new Dollars(amount);
+        return new Dollar(amount);
     }
 
     @Override
@@ -19,7 +23,7 @@ public class Dollars {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Dollars dollars = (Dollars) o;
+        Dollar dollars = (Dollar) o;
 
         return amount.equals(dollars.amount);
     }
